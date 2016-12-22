@@ -1,0 +1,144 @@
+package pers.fhr.exceldemo.util;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jxl.Cell;
+import jxl.CellType;
+import jxl.Sheet;
+import jxl.Workbook;
+/**
+ * Excel帮助类
+ * @author fhr
+ *
+ */
+public class ExcelUtil {
+  /**
+   * 以二维数组形式获取Excel所有值
+   * @param fileName
+   * @return
+   */
+  public static List<String[][]> readExcel(String fileName){
+	  List<String[][]> bookValues=new ArrayList<>();
+	  Workbook readWb=null;
+		try{
+			InputStream inputStream=new FileInputStream(fileName);
+			readWb=Workbook.getWorkbook(inputStream);
+			 Sheet [] sheets=readWb.getSheets();
+			for(Sheet readsheet : sheets){
+				int columns=readsheet.getColumns();
+				int rows=readsheet.getRows();
+				String [][]sheetValue=new String[rows][columns];
+				for(int i=0;i<rows;i++){
+					for(int j=0;j<columns;j++){
+						Cell cell=readsheet.getCell(j, i);
+						sheetValue[i][j]=cell.getContents();
+					}
+				}
+				bookValues.add(sheetValue);
+			}
+			return bookValues;
+		}catch(Exception e){
+			System.out.print( e.getMessage());
+			return null;
+		}
+  }
+  /**
+   * 以二维数组形式获取sheet
+   * @param fileName
+   * @param sheetName
+   * @return
+   */
+  public static String[][] readExcel(String fileName,String sheetName){
+	  Workbook readWb=null;
+		try{
+			InputStream inputStream=new FileInputStream(fileName);
+			readWb=Workbook.getWorkbook(inputStream);
+			 Sheet sheet=readWb.getSheet(sheetName);
+				int columns=sheet.getColumns();
+				int rows=sheet.getRows();
+				String [][]sheetValue=new String[rows][columns];
+				for(int i=0;i<rows;i++){
+					for(int j=0;j<columns;j++){
+						Cell cell=sheet.getCell(j, i);
+						sheetValue[i][j]=cell.getContents();
+					}
+				}
+				return sheetValue;
+		}catch(Exception e){
+			System.out.print( e.getMessage());
+			return null;
+		}
+  }
+  /**
+   * 以二维数组形式获取sheet
+   * @param fileName
+   * @param sheetName
+   * @return
+   */
+  public static List<Map> readExcelByMap(String fileName,String sheetName){
+	  Workbook readWb=null;
+		try{
+			InputStream inputStream=new FileInputStream(fileName);
+			readWb=Workbook.getWorkbook(inputStream);
+			 Sheet sheet=readWb.getSheet(sheetName);
+			 List<String> titles=getCollmnTitle(sheet);
+			 if(titles==null){
+				 return null;
+			 }
+			int columns=sheet.getColumns();
+			int rows=sheet.getRows();
+			for(int i=1;i<rows;i++){
+				Map<String, Object> rowMap=new HashMap<>();
+				for(int j=0;j<columns;j++){
+					Cell cell=sheet.getCell(j, i);
+					Class class1=ParseType(cell);
+					cell.getContents();
+				
+					CellType.BOOLEAN
+					}
+				}
+				return sheetValue;
+		}catch(Exception e){
+			System.out.print( e.getMessage());
+			return null;
+		}
+  }
+	  @SuppressWarnings("rawtypes")
+ private static Object ParseValue(Cell cell){
+		  Class type=null;
+		  if(CellType.BOOLEAN==cell.getType()){
+			  type=Boolean.class;
+		  }
+		  else if(cell.getType()==CellType.LABEL){
+			  type=String.class;
+		  }
+		  else if(cell.getType()==CellType.NUMBER){
+			  type=Double.class;
+		  }
+		  else if(cell.getType()==CellType.DATE){
+			  type=Double.class;
+		  }
+		  else {
+			  type=String.class;
+		  }
+			  return type;
+  }
+ public static List<String> getCollmnTitle(Sheet sheet){
+		 List<String> columns=new ArrayList<>();
+		 if(sheet.getRows()<1||sheet.getColumns()<1){
+			 return null;
+		 }
+		 Cell[] cells=sheet.getColumn(0);
+		 for(Cell cell :cells){
+			 columns.add(cell.getContents());	
+			}
+		 return columns;
+	}
+	  
+}
