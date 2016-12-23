@@ -1,0 +1,5 @@
+package pers.fhr.exceldemo.util;
+
+public @interface ExcelFieldAnnotation {
+
+}

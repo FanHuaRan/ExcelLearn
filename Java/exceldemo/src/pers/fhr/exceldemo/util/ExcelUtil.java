@@ -1,7 +1,12 @@
 package pers.fhr.exceldemo.util;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +17,19 @@ import jxl.Cell;
 import jxl.CellType;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.write.Alignment;
+import jxl.write.Border;
+import jxl.write.Label;
+import jxl.write.Pattern;
+import jxl.write.VerticalAlignment;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 /**
  * Excel帮助类
  * @author fhr
@@ -183,5 +201,104 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
 			}
 		 return columns;
 	}
-	  
+ /***
+  * 应用反射和注解将对象集合写入Excel
+  * @param models
+  * @param cls
+  * @param fileName
+  * @param sheetName
+  */
+ @SuppressWarnings("unchecked")
+ public static <T> void createExcel(List<T> models, Class<T> cls,String fileName, String sheetName) {
+     try {
+         OutputStream os = new FileOutputStream(fileName);
+         WritableWorkbook workbook = Workbook.createWorkbook(os);
+         workbook.setColourRGB(Colour.BLUE2, 79, 129, 189);
+         WritableSheet sheet = workbook.createSheet(sheetName, 0);
+         // jxl 最大只支持65535行 算总共需要创建多少个Sheet
+         int sheetCount = models.size() % 65535;
+         // 设置行高度
+        sheet.setRowView(0, 400);
+         sheet.setRowView(2, 350);
+         // 用于标题
+        WritableFont titleFont = new WritableFont(WritableFont
+                 .createFont("华文行楷"), 18, WritableFont.BOLD, false,
+                 UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.TEAL);
+         WritableCellFormat wcf_title = new WritableCellFormat(titleFont);
+         wcf_title.setBackground(Colour.WHITE, Pattern.SOLID);
+         wcf_title.setBorder(Border.RIGHT, BorderLineStyle.THIN,
+                 Colour.GRAY_25);
+         wcf_title.setVerticalAlignment(VerticalAlignment.CENTRE); // 垂直对齐
+        wcf_title.setAlignment(Alignment.CENTRE);
+         // 用于列头
+        WritableFont headFont = new WritableFont(WritableFont
+                 .createFont("宋体"), 11, WritableFont.BOLD, false,
+                 UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.WHITE);
+         WritableCellFormat wcf_head = new WritableCellFormat(headFont);
+         wcf_head.setBackground(Colour.LIGHT_BLUE, Pattern.PATTERN12);
+         wcf_head.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLUE2);
+         wcf_head.setVerticalAlignment(VerticalAlignment.CENTRE); // 垂直对齐
+        wcf_head.setAlignment(Alignment.CENTRE);
+
+         // 用于正文
+        WritableFont NormalFont = new WritableFont(WritableFont
+                 .createFont("宋体"), 11);
+         WritableCellFormat wcf_center = new WritableCellFormat(NormalFont);
+         wcf_center
+                 .setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLUE2);
+         wcf_center.setVerticalAlignment(VerticalAlignment.CENTRE); // 垂直对齐
+        wcf_center.setAlignment(Alignment.CENTRE);
+         wcf_center.setWrap(true); // 是否换行
+
+        // 获取类中所有定义的字段
+        Field[] fields = cls.getDeclaredFields();
+         // 定义集合封装注解字段
+        ArrayList<Field> annoFields = new ArrayList<Field>();
+         for (int i = 0; i < fields.length; i++) {
+             Field field = fields[i];
+             if (field.isAnnotationPresent(ExcelFieldAnnotation.class)) {
+                 annoFields.add(field);
+             }
+         }
+         sheet.addCell(new Label(0, 0, sheetName, wcf_title));
+         sheet.mergeCells(0, 0, annoFields.size() == 0 ? 1
+                 :  annoFields.size() - 1, 1);
+         // 写入Excel列头
+        for (int i = 0; i < annoFields.size(); i++) {
+             Field field =  annoFields.get(i);
+             // 获取该字段的注解对象
+             ExcelFieldAnnotation anno = field.getAnnotation(ExcelFieldAnnotation.class);
+             sheet.setColumnView(i, anno.width());
+             sheet.addCell(new Label(i, 2, anno.name(), wcf_head));
+         }
+
+        int rowId = 1;// 写入第几行 第一行为列头 数据从第二行开始写
+        for (Object ssTopModel : models) {
+             for (int i = 0; i < annoFields.size(); i++) {
+                 Field field = annoFields.get(i);
+                 try {
+                     sheet.addCell(new Label(i, rowId,field.get(ssTopModel).toString(),wcf_center));
+                 } catch (IllegalArgumentException e) {
+                     e.printStackTrace();
+                 } catch (IllegalAccessException e) {
+                     e.printStackTrace();
+                 }
+             }
+             rowId++;
+         }
+
+         workbook.write();
+         workbook.close();
+         os.flush();
+         os.close();
+     } catch (WriteException e) {
+         e.printStackTrace();
+     } catch (FileNotFoundException e) {
+         e.printStackTrace();
+     } catch (IOException e) {
+         e.printStackTrace();
+     } catch (SecurityException e) {
+         e.printStackTrace();
+     }
+ }
 }
