@@ -1,7 +1,5 @@
 package pers.fhr.exceldemo.test;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +68,7 @@ public class ExcelJunitTest {
 		students.add(new Student("小明", 1, 12.5));
 		students.add(new Student("小王", 2, 112.5));
 		students.add(new Student("小刚", 3, 22.5));
+		students.add(new Student("小强", 4, 22.5));
 		ExcelUtil.createExcel(students, Student.class, "testStudent2.xls", "student");
 	}
 

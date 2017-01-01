@@ -128,7 +128,7 @@ public static List<List<Map>> readExcelByMap(String fileName){
 			 }
 			return sheetMaps;
 		}catch(Exception e){
-			System.out.print( e.getMessage());
+			System.out.print(e.getMessage());
 			return null;
 		}
   }
@@ -138,7 +138,7 @@ public static List<List<Map>> readExcelByMap(String fileName){
    * @param sheetName
    * @return
    */
-  @SuppressWarnings({ "rawtypes", "rawtypes", "rawtypes", "rawtypes" })
+  @SuppressWarnings({ "rawtypes"})
 public static List<Map> readExcelByMap(String fileName,String sheetName){
 	  Workbook readWb=null;
 		try{
@@ -160,7 +160,7 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
 					}
 				rowsMap.add(rowMap);
 			}
-				return rowsMap;
+			return rowsMap;
 		}catch(Exception e){
 			System.out.print( e.getMessage());
 			return null;
@@ -183,25 +183,34 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
 		  else if(cell.getType()==CellType.NUMBER){
 			  object=Double.parseDouble(value);
 		  }
+		  /*日期转换 暂时不搞
 		  else if(cell.getType()==CellType.DATE){
 			  object=Date.parse(value);
 		  }
+		  */
 		  else {
 			  object=value;
 		  }
 		  return object;
   }
+ /**
+  * 获取列头
+  * @param sheet
+  * @return
+  */
  public static List<String> getCollmnTitle(Sheet sheet){
 		 List<String> columns=new ArrayList<>();
 		 if(sheet.getRows()<1||sheet.getColumns()<1){
 			 return null;
 		 }
-		 Cell[] cells=sheet.getColumn(0);
-		 for(Cell cell :cells){
+		 int columnsCount=sheet.getColumns();
+		// Cell[] cells=sheet.getColumn(0);
+		 for(int i=0;i<columnsCount;i++){
+			 Cell cell=sheet.getCell(i, 0);
 			 columns.add(cell.getContents());	
 			}
 		 return columns;
-	}
+ }
  /***
   * 应用反射和注解将对象集合写入Excel
   * @param models
@@ -217,7 +226,7 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
          workbook.setColourRGB(Colour.BLUE2, 79, 129, 189);
          WritableSheet sheet = workbook.createSheet(sheetName, 0);
          // 设置行高度
-         sheet.setRowView(4, 350);
+         sheet.setRowView(7, 350);
      	/*
      	WritableFont titleFont = new WritableFont(WritableFont
      	         .createFont("华文行楷"), 18, WritableFont.BOLD, false,
@@ -260,15 +269,16 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
          wcf_center.setWrap(true); // 是否换行
          */
         WritableCellFormat NormalFont =  SetCellStyle(WritableFont
-      	         .createFont("仿宋"), 8,false, UnderlineStyle.NO_UNDERLINE, Colour.TEAL, Colour.WHITE, Pattern.SOLID,Border.RIGHT, BorderLineStyle.THIN,
+      	         .createFont("仿宋"), 8,false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK, Colour.WHITE, Pattern.SOLID,Border.RIGHT, BorderLineStyle.THIN,
     	         Colour.GRAY_25, VerticalAlignment.CENTRE, Alignment.CENTRE);
         // 获取类中所有定义的字段
         Field[] fields = cls.getDeclaredFields();
          // 定义集合封装注解字段
         ArrayList<Field> annoFields = new ArrayList<Field>();
-         for (int i = 0; i < fields.length; i++) {
-             Field field = fields[i];
+         for ( Field field :fields) {
              if (field.isAnnotationPresent(ExcelFieldAnnotation.class)) {
+            	 //予许访问私有字段
+            	 field.setAccessible(true);
                  annoFields.add(field);
              }
          }
@@ -317,7 +327,9 @@ public static List<Map> readExcelByMap(String fileName,String sheetName){
          e.printStackTrace();
      }
  }
-
+/**
+ * 得到设置样式
+ */
 private static WritableCellFormat SetCellStyle(FontName fontName,int ps,boolean it,UnderlineStyle underlineStyle
 		,Colour colour,Colour backColor,jxl.format.Pattern solid
 		,jxl.format.Border right,BorderLineStyle borderLineStyle,Colour borderColor

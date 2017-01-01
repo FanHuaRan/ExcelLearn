@@ -3,12 +3,12 @@ package pers.fhr.exceldemo.test;
 import pers.fhr.exceldemo.util.ExcelFieldAnnotation;
 
 public class Student {
-	@ExcelFieldAnnotation(name="姓名",index=0,width=5)
-	public String name;
-	@ExcelFieldAnnotation(name="学号",index=1,width=5)
-	public int no;
-	@ExcelFieldAnnotation(name="余额",index=2,width=5)
-	public double count;
+	@ExcelFieldAnnotation(name="姓名",index=0,width=10)
+	private String name;
+	@ExcelFieldAnnotation(name="学号",index=1,width=10)
+	private int no;
+	@ExcelFieldAnnotation(name="余额",index=2,width=10)
+	private double count;
 	public void setName(String name){
 		this.name=name;
 	}
