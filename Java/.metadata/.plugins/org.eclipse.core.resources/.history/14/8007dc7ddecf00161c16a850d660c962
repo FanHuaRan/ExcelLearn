@@ -1,0 +1,57 @@
+package pers.fhr.exceldemo.test;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import pers.fhr.exceldemo.util.ExcelUtil;
+
+public class ExcelJunitTest {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void testReadExcelString() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testReadExcelStringString() {
+		ExcelUtil.readExcel("（徐发）11111", "修改");
+	}
+
+	@Test
+	public void testReadExcelByMapString() {
+		List<List<Map>> results=ExcelUtil.readExcelByMap("（徐发）11111");
+		for (int i = 0; i < results.size(); i++) {
+			for (Map map : results.get(i)) {
+				System.out.println(map.values());
+			}
+		}
+	}
+
+	@Test
+	public void testReadExcelByMapStringString() {
+		List<Map> results=ExcelUtil.readExcelByMap("（徐发）11111", "修改");
+		for (Map map : results) {
+			System.out.println(map.values());
+		}
+	}
+
+	@Test
+	public void testCreateExcel() {
+		List<Student> students=new ArrayList<>();
+		students.add(new Student("小明", 1, 12.5));
+		students.add(new Student("小王", 2, 112.5));
+		students.add(new Student("小刚", 3, 22.5));
+		ExcelUtil.createExcel(students, Student.class, "teststudent.xls", "student");
+	}
+
+}

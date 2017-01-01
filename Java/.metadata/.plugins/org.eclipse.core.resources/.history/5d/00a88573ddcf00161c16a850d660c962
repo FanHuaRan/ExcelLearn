@@ -1,0 +1,22 @@
+package pers.fhr.exceldemo.test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import pers.fhr.exceldemo.util.ExcelUtil;
+
+public class JunitTest {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void testCreateExcel() {
+	
+	}
+
+}

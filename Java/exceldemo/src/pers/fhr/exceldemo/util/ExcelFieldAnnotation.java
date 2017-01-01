@@ -18,7 +18,7 @@ public @interface ExcelFieldAnnotation {
 	//列名
 	String name();
 	//列号
-	int id();
+	int index();
 	//列宽
 	int width();
 }

@@ -1,0 +1,39 @@
+package pers.fhr.exceldemo.test;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class ExcelJunitTest {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void testReadExcelString() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testReadExcelStringString() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testReadExcelByMapString() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testReadExcelByMapStringString() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testCreateExcel() {
+		fail("Not yet implemented");
+	}
+
+}

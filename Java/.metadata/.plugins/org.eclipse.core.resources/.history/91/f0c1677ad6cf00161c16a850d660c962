@@ -1,0 +1,16 @@
+package pers.fhr.exceldemo.test;
+
+public class Student {
+	private String name;
+	private int no;
+	private double count;
+	public void setName(String name){
+		this.name=name;
+	}
+	public void setNo(int no){
+		this.no=no;
+	}
+	public void setCount(Double count){
+		this.count=count;
+	}
+}

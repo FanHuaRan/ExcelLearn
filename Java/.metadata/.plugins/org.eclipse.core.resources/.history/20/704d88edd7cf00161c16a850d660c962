@@ -1,0 +1,25 @@
+package pers.fhr.exceldemo.test;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class JunitTest {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void testCreateExcel() {
+		List<Student> students=new ArrayList<>();
+		students.add(new Student("小明", 1, 12.5));
+		students.add(new Student("小王", 2, 112.5));
+		students.add(new Student("小刚", 1, 22.5));
+	}
+
+}
